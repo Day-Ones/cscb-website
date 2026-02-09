@@ -407,16 +407,8 @@ const RegistrationForm = () => {
             Download QR Code
           </button>
 
-          <button
-            onClick={resetForm}
-            className="confirm-button"
-            style={{ marginTop: '15px', background: '#6c757d' }}
-          >
-            Register Another Student
-          </button>
-
           {qrCodeUrl && (
-            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
+            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
               <p style={{ color: '#155724', fontSize: '1rem', fontWeight: '600', margin: '0 0 10px 0' }}>
                 ✅ QR Code is ready for download
               </p>
@@ -425,6 +417,14 @@ const RegistrationForm = () => {
               </p>
             </div>
           )}
+
+          <button
+            onClick={resetForm}
+            className="confirm-button"
+            style={{ marginTop: '15px', background: '#6c757d' }}
+          >
+            Register Another Student
+          </button>
         </div>
       )}
     </div>
