@@ -178,245 +178,12 @@ const RegistrationForm = () => {
     }
   };
 
-  // Detect if user is in an in-app browser
-  const isInAppBrowser = () => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-    return (
-      userAgent.includes('FBAN') || // Facebook App
-      userAgent.includes('FBAV') || // Facebook App
-      userAgent.includes('Instagram') ||
-      userAgent.includes('WhatsApp') ||
-      userAgent.includes('Line') ||
-      userAgent.includes('Messenger') ||
-      userAgent.includes('MicroMessenger') || // WeChat
-      userAgent.includes('Twitter') ||
-      (userAgent.includes('Mobile') && userAgent.includes('Safari') && !userAgent.includes('Chrome')) // iOS in-app browser
-    );
-  };
-
   const downloadQRCode = () => {
     if (qrCodeUrl) {
-      try {
-        // Try the standard download method first
-        const link = document.createElement('a');
-        link.download = `${formData.firstName}_${formData.lastName}_QRCode.png`;
-        link.href = qrCodeUrl;
-        
-        // For in-app browsers, try different approaches
-        if (isInAppBrowser()) {
-          // Method 1: Try to open in new tab
-          const newWindow = window.open(qrCodeUrl, '_blank');
-          if (!newWindow) {
-            // Method 2: If popup blocked, show modal with instructions
-            alert('To save your QR code:\n\n1. Use the "View QR Code" button below\n2. Long press the QR code image\n3. Select "Save Image" or "Save to Photos"');
-            return;
-          }
-        } else {
-          // Standard browsers - use click method
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      } catch (error) {
-        console.error('Download failed:', error);
-        // Fallback: Open image in new tab
-        window.open(qrCodeUrl, '_blank') || alert('Use the "View QR Code" button to open in a new tab, then save the image.');
-      }
-    }
-  };
-
-  const openQRCode = () => {
-    if (qrCodeUrl) {
-      // Create a more robust solution that works in messenger
-      const newWindow = window.open('', '_blank', 'width=500,height=600,scrollbars=yes,resizable=yes');
-      if (newWindow) {
-        newWindow.document.write(`
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <title>Your QR Code - CSCB Registration</title>
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  margin: 0;
-                  padding: 20px;
-                  background: #f5f5f5;
-                  display: flex;
-                  flex-direction: column;
-                  align-items: center;
-                  font-family: Arial, sans-serif;
-                  -webkit-user-select: none;
-                  -moz-user-select: none;
-                  -ms-user-select: none;
-                  user-select: none;
-                }
-                
-                .qr-container {
-                  background: white;
-                  padding: 20px;
-                  border-radius: 15px;
-                  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                  margin: 20px 0;
-                }
-                
-                .qr-image {
-                  border: 2px solid #ddd;
-                  border-radius: 10px;
-                  background: white;
-                  padding: 10px;
-                  display: block;
-                  max-width: 100%;
-                  height: auto;
-                  -webkit-user-select: auto !important;
-                  -moz-user-select: auto !important;
-                  -ms-user-select: auto !important;
-                  user-select: auto !important;
-                  -webkit-touch-callout: default !important;
-                  -webkit-user-drag: auto !important;
-                  -khtml-user-drag: auto !important;
-                  -moz-user-drag: auto !important;
-                  -o-user-drag: auto !important;
-                  user-drag: auto !important;
-                }
-                
-                .save-buttons {
-                  display: flex;
-                  gap: 10px;
-                  margin: 20px 0;
-                  flex-wrap: wrap;
-                  justify-content: center;
-                }
-                
-                .save-btn {
-                  background: #28a745;
-                  color: white;
-                  border: none;
-                  padding: 12px 20px;
-                  border-radius: 8px;
-                  font-size: 14px;
-                  cursor: pointer;
-                  text-decoration: none;
-                  display: inline-block;
-                }
-                
-                .save-btn:hover {
-                  background: #218838;
-                }
-                
-                .instructions {
-                  max-width: 400px;
-                  text-align: center;
-                  color: #666;
-                  line-height: 1.5;
-                  margin: 10px 0;
-                }
-                
-                .data-url {
-                  margin-top: 20px;
-                  padding: 10px;
-                  background: #e9ecef;
-                  border-radius: 5px;
-                  word-break: break-all;
-                  font-size: 10px;
-                  color: #666;
-                  max-width: 400px;
-                }
-              </style>
-            </head>
-            <body>
-              <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Your CSCB Registration QR Code</h2>
-              
-              <div class="qr-container">
-                <img src="${qrCodeUrl}" alt="QR Code" class="qr-image" id="qrImage" 
-                     oncontextmenu="return true;" 
-                     ondragstart="return true;"
-                     style="-webkit-user-select: auto !important; -moz-user-select: auto !important;"
-                />
-              </div>
-              
-              <div class="save-buttons">
-                <button class="save-btn" onclick="copyImageToClipboard()">📋 Copy Image</button>
-                <a href="${qrCodeUrl}" download="QR_Code_CSCB.png" class="save-btn">💾 Download</a>
-                <button class="save-btn" onclick="showDataURL()">🔗 Show URL</button>
-              </div>
-              
-              <div class="instructions">
-                <p><strong>📱 Saving Instructions:</strong></p>
-                <p>• <strong>Method 1:</strong> Long press the QR code ↑ then select "Save Image"</p>
-                <p>• <strong>Method 2:</strong> Right-click the QR code ↑ then "Save image as..."</p>
-                <p>• <strong>Method 3:</strong> Use the "Download" button above</p>
-                <p>• <strong>Method 4:</strong> Take a screenshot of this page</p>
-              </div>
-              
-              <p style="color: #666; text-align: center; margin-top: 30px;">Present this QR code to officers for attendance.</p>
-              
-              <div id="dataUrlSection" style="display: none;">
-                <p style="color: #666; font-size: 12px; text-align: center;">Copy this URL and paste in browser address bar:</p>
-                <div class="data-url" onclick="selectDataURL()">${qrCodeUrl}</div>
-              </div>
-              
-              <script>
-                function copyImageToClipboard() {
-                  fetch('${qrCodeUrl}')
-                    .then(res => res.blob())
-                    .then(blob => {
-                      if (navigator.clipboard && window.ClipboardItem) {
-                        const item = new ClipboardItem({ 'image/png': blob });
-                        navigator.clipboard.write([item])
-                          .then(() => alert('QR code copied to clipboard!'))
-                          .catch(() => alert('Copy failed. Try right-clicking the image and selecting "Copy image".'));
-                      } else {
-                        alert('Copy not supported. Try right-clicking the image and selecting "Save image as..." or "Copy image".');
-                      }
-                    })
-                    .catch(() => {
-                      alert('Copy failed. Try right-clicking the image and selecting "Save image as..." or "Copy image".');
-                    });
-                }
-                
-                function showDataURL() {
-                  document.getElementById('dataUrlSection').style.display = 'block';
-                  document.getElementById('dataUrlSection').scrollIntoView({ behavior: 'smooth' });
-                }
-                
-                function selectDataURL() {
-                  const element = event.target;
-                  if (window.getSelection) {
-                    const selection = window.getSelection();
-                    const range = document.createRange();
-                    range.selectNodeContents(element);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                  }
-                }
-                
-                // Force enable context menu on image
-                document.getElementById('qrImage').addEventListener('contextmenu', function(e) {
-                  e.stopPropagation();
-                  return true;
-                });
-                
-                // Add touch handlers for mobile
-                let touchTimer = null;
-                document.getElementById('qrImage').addEventListener('touchstart', function(e) {
-                  touchTimer = setTimeout(function() {
-                    // Show instructions for long press
-                    alert('Hold your finger on the image for 2-3 seconds, then select "Save Image" or "Save to Photos"');
-                  }, 1000);
-                });
-                
-                document.getElementById('qrImage').addEventListener('touchend', function(e) {
-                  clearTimeout(touchTimer);
-                });
-              </script>
-            </body>
-          </html>
-        `);
-        newWindow.document.close();
-      } else {
-        // If window.open fails, show data URL directly
-        alert('Popup blocked. Your QR code data URL is:\\n\\n' + qrCodeUrl.substring(0, 100) + '...\\n\\nCopy this entire URL and paste it in a browser address bar to view and save your QR code.');
-      }
+      const link = document.createElement('a');
+      link.download = `${formData.firstName}_${formData.lastName}_QRCode.png`;
+      link.href = qrCodeUrl;
+      link.click();
     }
   };
 
@@ -658,7 +425,7 @@ const RegistrationForm = () => {
                   }}
                   draggable={false}
                 />
-                {isInAppBrowser() && (
+                {false && (
                   <div style={{
                     position: 'absolute',
                     bottom: '-35px',
@@ -679,45 +446,22 @@ const RegistrationForm = () => {
             )}
           </div>
           
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button
-              onClick={downloadQRCode}
-              className="download-button"
-              disabled={!qrCodeUrl}
-            >
-              Download QR Code
-            </button>
-            
-            <button
-              onClick={openQRCode}
-              className="download-button"
-              disabled={!qrCodeUrl}
-              style={{ 
-                background: '#007bff',
-                ':hover': { background: '#0056b3' }
-              }}
-              onMouseEnter={(e) => e.target.style.background = '#0056b3'}
-              onMouseLeave={(e) => e.target.style.background = '#007bff'}
-            >
-              View QR Code
-            </button>
-          </div>
+          <button
+            onClick={downloadQRCode}
+            className="download-button"
+            disabled={!qrCodeUrl}
+          >
+            Download QR Code
+          </button>
 
           {qrCodeUrl && (
             <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
               <p style={{ color: '#155724', fontSize: '1rem', fontWeight: '600', margin: '0 0 10px 0' }}>
                 ✅ QR Code is ready for download
               </p>
-              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0 0 10px 0', lineHeight: '1.5' }}>
-                <strong>Instructions:</strong> Use "Download QR Code" or "View QR Code" button above, then save the image. Present it to officers for attendance.
+              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0', lineHeight: '1.5' }}>
+                <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
               </p>
-              {isInAppBrowser() && (
-                <div style={{ backgroundColor: '#fff3cd', padding: '10px', borderRadius: '6px', border: '1px solid #ffeaa7', marginTop: '10px' }}>
-                  <p style={{ color: '#856404', fontSize: '0.85rem', margin: '0', lineHeight: '1.4' }}>
-                    <strong>📱 In messenger?</strong> Use the blue "View QR Code" button → Long press the image → "Save Image"
-                  </p>
-                </div>
-              )}
             </div>
           )}
 
