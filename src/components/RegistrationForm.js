@@ -208,7 +208,7 @@ const RegistrationForm = () => {
           const newWindow = window.open(qrCodeUrl, '_blank');
           if (!newWindow) {
             // Method 2: If popup blocked, show modal with instructions
-            alert('To download your QR code:\n\n1. Long press on the QR code image\n2. Select "Save Image"\nor\n1. Tap the menu (⋮) in the top right\n2. Select "Open in browser"\n3. Then click Download QR Code');
+            alert('To save your QR code:\n\n1. Use the "View QR Code" button below\n2. Long press the QR code image\n3. Select "Save Image" or "Save to Photos"');
             return;
           }
         } else {
@@ -220,7 +220,32 @@ const RegistrationForm = () => {
       } catch (error) {
         console.error('Download failed:', error);
         // Fallback: Open image in new tab
-        window.open(qrCodeUrl, '_blank') || alert('Please long press on the QR code image and select "Save Image" to download.');
+        window.open(qrCodeUrl, '_blank') || alert('Use the "View QR Code" button to open in a new tab, then save the image.');
+      }
+    }
+  };
+
+  const openQRCode = () => {
+    if (qrCodeUrl) {
+      // This should work universally - opens QR code image in new tab/window
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head><title>Your QR Code - CSCB Registration</title></head>
+            <body style="margin: 0; padding: 20px; background: #f5f5f5; display: flex; flex-direction: column; align-items: center; font-family: Arial, sans-serif;">
+              <h2 style="color: #333; margin-bottom: 20px;">Your CSCB Registration QR Code</h2>
+              <img src="${qrCodeUrl}" alt="QR Code" style="border: 2px solid #ddd; border-radius: 10px; background: white; padding: 10px;" />
+              <p style="margin-top: 20px; color: #666; text-align: center; max-width: 400px;">
+                <strong>Instructions:</strong> Long press the QR code image above and select "Save Image" or "Save to Photos" to download it.
+              </p>
+              <p style="color: #666; text-align: center;">Present this QR code to officers for attendance.</p>
+            </body>
+          </html>
+        `);
+        newWindow.document.close();
+      } else {
+        alert('Could not open QR code. Please try copying this link and pasting in your browser: ' + qrCodeUrl);
       }
     }
   };
@@ -436,33 +461,77 @@ const RegistrationForm = () => {
             
             {/* Visible QR code image that supports long-press save */}
             {qrCodeUrl && (
-              <img 
-                src={qrCodeUrl}
-                alt="QR Code for Registration"
-                style={{ 
-                  width: '300px',
-                  height: '300px',
-                  border: '1px solid #ddd', 
-                  borderRadius: '8px',
-                  display: 'block',
-                  margin: '0 auto',
-                  cursor: 'pointer'
-                }}
-                onContextMenu={(e) => {
-                  // Allow right-click context menu for saving
-                  e.stopPropagation();
-                }}
-              />
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img 
+                  src={qrCodeUrl}
+                  alt="QR Code for Registration"
+                  style={{ 
+                    width: '300px',
+                    height: '300px',
+                    border: '1px solid #ddd', 
+                    borderRadius: '8px',
+                    display: 'block',
+                    margin: '0 auto',
+                    cursor: 'pointer',
+                    touchAction: 'manipulation',
+                    userSelect: 'none',
+                    webkitUserSelect: 'none',
+                    webkitTouchCallout: 'default'
+                  }}
+                  onContextMenu={(e) => {
+                    // Allow right-click context menu for saving
+                    e.stopPropagation();
+                  }}
+                  onTouchStart={(e) => {
+                    // Enable touch events
+                    e.stopPropagation();
+                  }}
+                  draggable={false}
+                />
+                {isInAppBrowser() && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '-35px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(0,0,0,0.8)',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    whiteSpace: 'nowrap',
+                    pointerEvents: 'none'
+                  }}>
+                    Long press to save
+                  </div>
+                )}
+              </div>
             )}
           </div>
           
-          <button
-            onClick={downloadQRCode}
-            className="download-button"
-            disabled={!qrCodeUrl}
-          >
-            Download QR Code
-          </button>
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button
+              onClick={downloadQRCode}
+              className="download-button"
+              disabled={!qrCodeUrl}
+            >
+              Download QR Code
+            </button>
+            
+            <button
+              onClick={openQRCode}
+              className="download-button"
+              disabled={!qrCodeUrl}
+              style={{ 
+                background: '#007bff',
+                ':hover': { background: '#0056b3' }
+              }}
+              onMouseEnter={(e) => e.target.style.background = '#0056b3'}
+              onMouseLeave={(e) => e.target.style.background = '#007bff'}
+            >
+              View QR Code
+            </button>
+          </div>
 
           {qrCodeUrl && (
             <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
@@ -470,12 +539,12 @@ const RegistrationForm = () => {
                 ✅ QR Code is ready for download
               </p>
               <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0 0 10px 0', lineHeight: '1.5' }}>
-                <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
+                <strong>Instructions:</strong> Use "Download QR Code" or "View QR Code" button above, then save the image. Present it to officers for attendance.
               </p>
               {isInAppBrowser() && (
                 <div style={{ backgroundColor: '#fff3cd', padding: '10px', borderRadius: '6px', border: '1px solid #ffeaa7', marginTop: '10px' }}>
                   <p style={{ color: '#856404', fontSize: '0.85rem', margin: '0', lineHeight: '1.4' }}>
-                    <strong>📱 Viewing in messenger?</strong> For best experience, tap "Open in browser" or long press the QR code image and select "Save Image".
+                    <strong>📱 In messenger?</strong> Use the blue "View QR Code" button → Long press the image → "Save Image"
                   </p>
                 </div>
               )}
