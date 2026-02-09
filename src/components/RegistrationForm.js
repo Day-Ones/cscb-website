@@ -416,9 +416,14 @@ const RegistrationForm = () => {
           </button>
 
           {qrCodeUrl && (
-            <p style={{ marginTop: '15px', color: '#28a745', fontSize: '0.9rem' }}>
-              QR Code is ready for download
-            </p>
+            <div style={{ marginTop: '20px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
+              <p style={{ color: '#155724', fontSize: '1rem', fontWeight: '600', margin: '0 0 10px 0' }}>
+                ✅ QR Code is ready for download
+              </p>
+              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0', lineHeight: '1.5' }}>
+                <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
+              </p>
+            </div>
           )}
         </div>
       )}
