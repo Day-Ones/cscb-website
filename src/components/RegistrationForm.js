@@ -425,16 +425,35 @@ const RegistrationForm = () => {
                 </div>
               </div>
             ) : null}
+            
+            {/* Hidden canvas for QR code generation */}
             <canvas 
               ref={canvasRef}
               width="300" 
               height="300"
-              style={{ 
-                border: '1px solid #ddd', 
-                borderRadius: '8px',
-                display: qrCodeUrl ? 'block' : 'none'
-              }}
+              style={{ display: 'none' }}
             ></canvas>
+            
+            {/* Visible QR code image that supports long-press save */}
+            {qrCodeUrl && (
+              <img 
+                src={qrCodeUrl}
+                alt="QR Code for Registration"
+                style={{ 
+                  width: '300px',
+                  height: '300px',
+                  border: '1px solid #ddd', 
+                  borderRadius: '8px',
+                  display: 'block',
+                  margin: '0 auto',
+                  cursor: 'pointer'
+                }}
+                onContextMenu={(e) => {
+                  // Allow right-click context menu for saving
+                  e.stopPropagation();
+                }}
+              />
+            )}
           </div>
           
           <button
