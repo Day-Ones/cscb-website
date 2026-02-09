@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import QRCode from 'qrcode';
-import logo from '../CS Logo.png';
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -210,7 +209,7 @@ const RegistrationForm = () => {
   return (
     <div className="registration-container">
       <div className="logo-container">
-        <img src={logo} alt="CS Logo" className="logo" />
+        <img src="/cs-logo.png" alt="CS Logo" className="logo" />
       </div>
       <h1 className="title">CSCB Student Registration</h1>
       
