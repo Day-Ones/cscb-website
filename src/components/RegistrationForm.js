@@ -178,12 +178,50 @@ const RegistrationForm = () => {
     }
   };
 
+  // Detect if user is in an in-app browser
+  const isInAppBrowser = () => {
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    return (
+      userAgent.includes('FBAN') || // Facebook App
+      userAgent.includes('FBAV') || // Facebook App
+      userAgent.includes('Instagram') ||
+      userAgent.includes('WhatsApp') ||
+      userAgent.includes('Line') ||
+      userAgent.includes('Messenger') ||
+      userAgent.includes('MicroMessenger') || // WeChat
+      userAgent.includes('Twitter') ||
+      (userAgent.includes('Mobile') && userAgent.includes('Safari') && !userAgent.includes('Chrome')) // iOS in-app browser
+    );
+  };
+
   const downloadQRCode = () => {
     if (qrCodeUrl) {
-      const link = document.createElement('a');
-      link.download = `${formData.firstName}_${formData.lastName}_QRCode.png`;
-      link.href = qrCodeUrl;
-      link.click();
+      try {
+        // Try the standard download method first
+        const link = document.createElement('a');
+        link.download = `${formData.firstName}_${formData.lastName}_QRCode.png`;
+        link.href = qrCodeUrl;
+        
+        // For in-app browsers, try different approaches
+        if (isInAppBrowser()) {
+          // Method 1: Try to open in new tab
+          const newWindow = window.open(qrCodeUrl, '_blank');
+          if (!newWindow) {
+            // Method 2: If popup blocked, show modal with instructions
+            alert('To download your QR code:\n\n1. Long press on the QR code image\n2. Select "Save Image"\nor\n1. Tap the menu (⋮) in the top right\n2. Select "Open in browser"\n3. Then click Download QR Code');
+            return;
+          }
+        } else {
+          // Standard browsers - use click method
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error) {
+        console.error('Download failed:', error);
+        // Fallback: Open image in new tab
+        window.open(qrCodeUrl, '_blank') || alert('Please long press on the QR code image and select "Save Image" to download.');
+      }
     }
   };
 
@@ -412,9 +450,16 @@ const RegistrationForm = () => {
               <p style={{ color: '#155724', fontSize: '1rem', fontWeight: '600', margin: '0 0 10px 0' }}>
                 ✅ QR Code is ready for download
               </p>
-              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0', lineHeight: '1.5' }}>
+              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0 0 10px 0', lineHeight: '1.5' }}>
                 <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
               </p>
+              {isInAppBrowser() && (
+                <div style={{ backgroundColor: '#fff3cd', padding: '10px', borderRadius: '6px', border: '1px solid #ffeaa7', marginTop: '10px' }}>
+                  <p style={{ color: '#856404', fontSize: '0.85rem', margin: '0', lineHeight: '1.4' }}>
+                    <strong>📱 Viewing in messenger?</strong> For best experience, tap "Open in browser" or long press the QR code image and select "Save Image".
+                  </p>
+                </div>
+              )}
             </div>
           )}
 
