@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import QRCode from 'qrcode';
 import logo from '../CS Logo.png';
 
@@ -16,7 +16,15 @@ const RegistrationForm = () => {
   const [showModal, setShowModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [registrationData, setRegistrationData] = useState(null);
   const canvasRef = useRef(null);
+
+  // UseEffect to generate QR code when registration is complete and canvas is ready
+  useEffect(() => {
+    if (isRegistered && registrationData && canvasRef.current) {
+      generateQRCode(registrationData);
+    }
+  }, [isRegistered, registrationData]);
 
   const programs = [
     'Bachelor of Science in Information Technology',
@@ -92,6 +100,7 @@ const RegistrationForm = () => {
 
   const generateQRCode = async (identity) => {
     try {
+      console.log('Starting QR code generation with data:', identity);
       const qrData = JSON.stringify(identity);
       const canvas = canvasRef.current;
       
@@ -99,6 +108,12 @@ const RegistrationForm = () => {
         console.error('Canvas element not found');
         return;
       }
+
+      console.log('Canvas found, generating QR code...');
+      
+      // Clear canvas first
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Generate QR code directly to canvas
       await QRCode.toCanvas(canvas, qrData, {
@@ -114,7 +129,7 @@ const RegistrationForm = () => {
       // Get the data URL from canvas
       const dataUrl = canvas.toDataURL('image/png');
       setQrCodeUrl(dataUrl);
-      console.log('QR Code generated successfully');
+      console.log('QR Code generated successfully, dataUrl length:', dataUrl.length);
       
     } catch (error) {
       console.error('Error generating QR code:', error);
@@ -150,9 +165,12 @@ const RegistrationForm = () => {
       // Store the registration data (in a real app, this would be sent to a backend)
       localStorage.setItem(`student_${formData.studentNumber}`, JSON.stringify(identity));
       
-      await generateQRCode(identity);
+      // Store registration data for QR generation
+      setRegistrationData(identity);
       setIsRegistered(true);
       setShowModal(true);
+      
+      console.log('Registration completed, QR code generation will be triggered by useEffect');
     } catch (error) {
       alert('Registration failed. Please try again.');
       console.error('Registration error:', error);
@@ -182,6 +200,7 @@ const RegistrationForm = () => {
     setIsRegistered(false);
     setShowModal(false);
     setFieldErrors({});
+    setRegistrationData(null);
   };
 
   const closeModal = () => {
@@ -352,11 +371,32 @@ const RegistrationForm = () => {
 
           <h3 className="qr-title">Your QR Code</h3>
           <div className="qr-canvas">
+            {!qrCodeUrl ? (
+              <div style={{ 
+                width: '300px', 
+                height: '300px', 
+                border: '1px solid #ddd', 
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f8f9fa'
+              }}>
+                <div style={{ textAlign: 'center', color: '#666' }}>
+                  <div className="spinner" style={{ margin: '0 auto 10px' }}></div>
+                  <p>Generating QR Code...</p>
+                </div>
+              </div>
+            ) : null}
             <canvas 
               ref={canvasRef}
               width="300" 
               height="300"
-              style={{ border: '1px solid #ddd', borderRadius: '8px' }}
+              style={{ 
+                border: '1px solid #ddd', 
+                borderRadius: '8px',
+                display: qrCodeUrl ? 'block' : 'none'
+              }}
             ></canvas>
           </div>
           

@@ -205,36 +205,52 @@ body {
   background: #f8f9fa;
   border-radius: 10px;
   border: 2px dashed #667eea;
+  text-align: center;
 }
 
 .qr-title {
   color: #333;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-size: 1.3rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .qr-canvas {
-  margin: 20px 0;
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.qr-canvas canvas {
+  margin: 0 auto;
+  display: block;
 }
 
 .download-button {
   background: #28a745;
   color: white;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 24px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
+  margin: 15px auto;
 }
 
 .download-button:hover {
   background: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
 }
 
 .modal-overlay {
