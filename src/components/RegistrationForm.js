@@ -40,9 +40,19 @@ const RegistrationForm = () => {
   };
 
   const calculateProgress = () => {
-    const fields = ['studentNumber', 'lastName', 'firstName', 'program', 'yearLevel'];
-    const filledFields = fields.filter(field => formData[field] !== '').length;
-    return (filledFields / fields.length) * 100;
+    // Base fields that are always visible
+    const baseFields = ['studentNumber', 'lastName', 'firstName', 'program'];
+    const baseFilledFields = baseFields.filter(field => formData[field] !== '').length;
+    
+    // If program is selected, include yearLevel in calculation
+    if (formData.program) {
+      const totalFields = 5;
+      const totalFilledFields = formData.yearLevel ? baseFilledFields + 1 : baseFilledFields;
+      return (totalFilledFields / totalFields) * 100;
+    }
+    
+    // If program is not selected, calculate based on base fields only
+    return (baseFilledFields / baseFields.length) * 100;
   };
 
   const validateField = (name, value) => {
@@ -243,103 +253,105 @@ const RegistrationForm = () => {
             <p className="progress-text">{Math.round(calculateProgress())}% Complete</p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="studentNumber" className="form-label">
-              Student Number *
-            </label>
-            <input
-              type="text"
-              id="studentNumber"
-              name="studentNumber"
-              value={formData.studentNumber}
-              onChange={handleInputChange}
-              className={`form-input ${formData.studentNumber ? 'filled' : ''} ${fieldErrors.studentNumber ? 'error' : ''}`}
-              placeholder="Enter your student number"
-              required
-            />
-            {fieldErrors.studentNumber && (
-              <span className="error-message">{fieldErrors.studentNumber}</span>
-            )}
-          </div>
+          <div className="form-columns">
+            <div className="form-group full-width">
+              <label htmlFor="studentNumber" className="form-label">
+                Student Number *
+              </label>
+              <input
+                type="text"
+                id="studentNumber"
+                name="studentNumber"
+                value={formData.studentNumber}
+                onChange={handleInputChange}
+                className={`form-input ${formData.studentNumber ? 'filled' : ''} ${fieldErrors.studentNumber ? 'error' : ''}`}
+                placeholder="Enter your student number"
+                required
+              />
+              {fieldErrors.studentNumber && (
+                <span className="error-message">{fieldErrors.studentNumber}</span>
+              )}
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="lastName" className="form-label">
-              Last Name *
-            </label>
-            <input
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleInputChange}
-              className={`form-input ${formData.lastName ? 'filled' : ''} ${fieldErrors.lastName ? 'error' : ''}`}
-              placeholder="Enter your last name"
-              required
-            />
-            {fieldErrors.lastName && (
-              <span className="error-message">{fieldErrors.lastName}</span>
-            )}
-          </div>
+            <div className="form-group">
+              <label htmlFor="firstName" className="form-label">
+                First Name *
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className={`form-input ${formData.firstName ? 'filled' : ''} ${fieldErrors.firstName ? 'error' : ''}`}
+                placeholder="Enter your first name"
+                required
+              />
+              {fieldErrors.firstName && (
+                <span className="error-message">{fieldErrors.firstName}</span>
+              )}
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="firstName" className="form-label">
-              First Name *
-            </label>
-            <input
-              type="text"
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleInputChange}
-              className={`form-input ${formData.firstName ? 'filled' : ''} ${fieldErrors.firstName ? 'error' : ''}`}
-              placeholder="Enter your first name"
-              required
-            />
-            {fieldErrors.firstName && (
-              <span className="error-message">{fieldErrors.firstName}</span>
-            )}
-          </div>
+            <div className="form-group">
+              <label htmlFor="lastName" className="form-label">
+                Last Name *
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className={`form-input ${formData.lastName ? 'filled' : ''} ${fieldErrors.lastName ? 'error' : ''}`}
+                placeholder="Enter your last name"
+                required
+              />
+              {fieldErrors.lastName && (
+                <span className="error-message">{fieldErrors.lastName}</span>
+              )}
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="program" className="form-label">
-              Program *
-            </label>
-            <select
-              id="program"
-              name="program"
-              value={formData.program}
-              onChange={handleInputChange}
-              className={`form-select ${formData.program ? 'filled' : ''}`}
-              required
-            >
-              <option value="">Select your program</option>
-              {programs.map((program, index) => (
-                <option key={index} value={program}>
-                  {program}
-                </option>
-              ))}
-            </select>
-          </div>
+            <div className="form-group full-width">
+              <label htmlFor="program" className="form-label">
+                Program *
+              </label>
+              <select
+                id="program"
+                name="program"
+                value={formData.program}
+                onChange={handleInputChange}
+                className={`form-select ${formData.program ? 'filled' : ''}`}
+                required
+              >
+                <option value="">Select your program</option>
+                {programs.map((program, index) => (
+                  <option key={index} value={program}>
+                    {program}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <div className={`form-group year-level-group ${formData.program ? 'show' : ''}`}>
-            <label htmlFor="yearLevel" className="form-label">
-              Year Level *
-            </label>
-            <select
-              id="yearLevel"
-              name="yearLevel"
-              value={formData.yearLevel}
-              onChange={handleInputChange}
-              className={`form-select ${formData.yearLevel ? 'filled' : ''}`}
-              required
-            >
-              <option value="">Select your year level</option>
-              {getYearLevels(formData.program).map((year, index) => (
-                <option key={index} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
+            <div className={`form-group full-width year-level-group ${formData.program ? 'show' : ''}`}>
+              <label htmlFor="yearLevel" className="form-label">
+                Year Level *
+              </label>
+              <select
+                id="yearLevel"
+                name="yearLevel"
+                value={formData.yearLevel}
+                onChange={handleInputChange}
+                className={`form-select ${formData.yearLevel ? 'filled' : ''}`}
+                required
+              >
+                <option value="">Select your year level</option>
+                {getYearLevels(formData.program).map((year, index) => (
+                  <option key={index} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <button
@@ -360,118 +372,106 @@ const RegistrationForm = () => {
         </form>
       ) : (
         <div className="qr-section">
-          <div className="student-info">
-            <h4>Registration Details</h4>
-            <p><strong>Student Number:</strong> {formData.studentNumber}</p>
-            <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
-            <p><strong>Program:</strong> {formData.program}</p>
-            <p><strong>Year Level:</strong> {formData.yearLevel}</p>
-          </div>
+          <h3 className="qr-title">Registration Successful!</h3>
+          
+          <div className="qr-content-wrapper">
+            <div className="qr-left-panel">
+              <div className="student-info">
+                <h4>Registration Details</h4>
+                <p><strong>Student Number:</strong> {formData.studentNumber}</p>
+                <p><strong>Name:</strong> {formData.firstName} {formData.lastName}</p>
+                <p><strong>Program:</strong> {formData.program}</p>
+                <p><strong>Year Level:</strong> {formData.yearLevel}</p>
+              </div>
 
-          <h3 className="qr-title">Your QR Code</h3>
-          <div className="qr-canvas">
-            {!qrCodeUrl ? (
-              <div style={{ 
-                width: '300px', 
-                height: '300px', 
-                border: '1px solid #ddd', 
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#f8f9fa'
-              }}>
-                <div style={{ textAlign: 'center', color: '#666' }}>
-                  <div className="spinner" style={{ margin: '0 auto 10px' }}></div>
-                  <p>Generating QR Code...</p>
+              {qrCodeUrl && (
+                <div style={{ marginTop: '10px', padding: '12px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
+                  <p style={{ color: '#155724', fontSize: '0.95rem', fontWeight: '600', margin: '0 0 8px 0' }}>
+                    ✅ QR Code is ready for download
+                  </p>
+                  <p style={{ color: '#155724', fontSize: '0.85rem', margin: '0', lineHeight: '1.4' }}>
+                    <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
+                  </p>
                 </div>
-              </div>
-            ) : null}
-            
-            {/* Hidden canvas for QR code generation */}
-            <canvas 
-              ref={canvasRef}
-              width="300" 
-              height="300"
-              style={{ display: 'none' }}
-            ></canvas>
-            
-            {/* Visible QR code image that supports long-press save */}
-            {qrCodeUrl && (
-              <div style={{ position: 'relative', display: 'inline-block' }}>
-                <img 
-                  src={qrCodeUrl}
-                  alt="QR Code for Registration"
-                  style={{ 
-                    width: '300px',
-                    height: '300px',
-                    border: '1px solid #ddd', 
-                    borderRadius: '8px',
-                    display: 'block',
-                    margin: '0 auto',
-                    cursor: 'pointer',
-                    touchAction: 'manipulation',
-                    userSelect: 'none',
-                    webkitUserSelect: 'none',
-                    webkitTouchCallout: 'default'
-                  }}
-                  onContextMenu={(e) => {
-                    // Allow right-click context menu for saving
-                    e.stopPropagation();
-                  }}
-                  onTouchStart={(e) => {
-                    // Enable touch events
-                    e.stopPropagation();
-                  }}
-                  draggable={false}
-                />
-                {false && (
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '-35px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'rgba(0,0,0,0.8)',
-                    color: 'white',
-                    padding: '4px 8px',
-                    borderRadius: '4px',
-                    fontSize: '12px',
-                    whiteSpace: 'nowrap',
-                    pointerEvents: 'none'
-                  }}>
-                    Long press to save
+              )}
+            </div>
+
+            <div className="qr-canvas">
+              {!qrCodeUrl ? (
+                <div style={{ 
+                  width: '220px', 
+                  height: '220px', 
+                  border: '1px solid #ddd', 
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f8f9fa'
+                }}>
+                  <div style={{ textAlign: 'center', color: '#666' }}>
+                    <div className="spinner" style={{ margin: '0 auto 10px' }}></div>
+                    <p>Generating QR Code...</p>
                   </div>
-                )}
-              </div>
-            )}
+                </div>
+              ) : null}
+              
+              {/* Hidden canvas for QR code generation */}
+              <canvas 
+                ref={canvasRef}
+                width="300" 
+                height="300"
+                style={{ display: 'none' }}
+              ></canvas>
+              
+              {/* Visible QR code image */}
+              {qrCodeUrl && (
+                <div style={{ position: 'relative', display: 'inline-block' }}>
+                  <img 
+                    src={qrCodeUrl}
+                    alt="QR Code for Registration"
+                    style={{ 
+                      width: '220px',
+                      height: '220px',
+                      border: '1px solid #ddd', 
+                      borderRadius: '8px',
+                      display: 'block',
+                      margin: '0 auto',
+                      cursor: 'pointer',
+                      touchAction: 'manipulation',
+                      userSelect: 'none',
+                      webkitUserSelect: 'none',
+                      webkitTouchCallout: 'default'
+                    }}
+                    onContextMenu={(e) => {
+                      e.stopPropagation();
+                    }}
+                    onTouchStart={(e) => {
+                      e.stopPropagation();
+                    }}
+                    draggable={false}
+                  />
+                </div>
+              )}
+            </div>
           </div>
           
-          <button
-            onClick={downloadQRCode}
-            className="download-button"
-            disabled={!qrCodeUrl}
-          >
-            Download QR Code
-          </button>
+          <div className="qr-buttons">
+            <button
+              onClick={downloadQRCode}
+              className="download-button"
+              disabled={!qrCodeUrl}
+            >
+              Download QR Code
+            </button>
 
-          {qrCodeUrl && (
-            <div style={{ marginTop: '15px', padding: '15px', backgroundColor: '#d4edda', borderRadius: '8px', border: '1px solid #c3e6cb' }}>
-              <p style={{ color: '#155724', fontSize: '1rem', fontWeight: '600', margin: '0 0 10px 0' }}>
-                ✅ QR Code is ready for download
-              </p>
-              <p style={{ color: '#155724', fontSize: '0.9rem', margin: '0', lineHeight: '1.5' }}>
-                <strong>Instructions:</strong> Take a screenshot or download your QR code and present it to the officers for your attendance.
-              </p>
-            </div>
-          )}
-
-          <button
-            onClick={resetForm}
-            className="confirm-button"
-            style={{ marginTop: '15px', background: '#6c757d' }}
-          >
-            Register Another Student
-          </button>
+            <button
+              onClick={resetForm}
+              className="confirm-button"
+              style={{ background: '#6c757d', marginTop: '10px' }}
+            >
+              Register Another Student
+            </button>
+          </div>
         </div>
       )}
     </div>
