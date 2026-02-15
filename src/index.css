@@ -6,54 +6,57 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .App {
   text-align: center;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 30px;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .registration-container {
   background: white;
-  border-radius: 15px;
-  padding: 40px;
+  border-radius: 12px;
+  padding: 25px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+  max-width: 950px;
   width: 100%;
-  margin: 20px;
+  margin: auto;
 }
 
 .logo-container {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 }
 
 .logo {
-  max-width: 150px;
+  max-width: 90px;
   height: auto;
   object-fit: contain;
 }
 
 .title {
   color: #333;
-  margin-bottom: 30px;
-  font-size: 2.2rem;
+  margin-bottom: 18px;
+  font-size: 1.7rem;
   font-weight: 600;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   text-align: left;
 }
 
 .progress-container {
-  margin-bottom: 25px;
+  margin-bottom: 15px;
 }
 
 .progress-bar {
@@ -82,16 +85,16 @@ body {
 
 .form-label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   color: #555;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .form-input,
 .form-select {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 14px;
   border: 2px solid #e1e5e9;
   border-radius: 8px;
   font-size: 1rem;
@@ -156,20 +159,20 @@ body {
 
 .confirm-button {
   width: 100%;
-  padding: 15px;
+  padding: 12px;
   background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  margin-top: 20px;
+  margin-top: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .confirm-button:hover:not(:disabled) {
@@ -200,8 +203,8 @@ body {
 }
 
 .qr-section {
-  margin-top: 30px;
-  padding: 20px;
+  margin-top: 18px;
+  padding: 15px;
   background: #f8f9fa;
   border-radius: 10px;
   border: 2px dashed #667eea;
@@ -210,14 +213,14 @@ body {
 
 .qr-title {
   color: #333;
-  margin-bottom: 20px;
-  font-size: 1.3rem;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
   font-weight: 600;
   text-align: center;
 }
 
 .qr-canvas {
-  margin: 20px auto;
+  margin: 15px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,21 +233,63 @@ body {
   display: block;
 }
 
+/* Desktop layout for QR section */
+@media (min-width: 768px) {
+  .qr-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .qr-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  .qr-left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .qr-canvas {
+    margin: 0;
+  }
+  
+  .qr-canvas img {
+    width: 220px !important;
+    height: 220px !important;
+  }
+  
+  .student-info {
+    margin-bottom: 0 !important;
+  }
+  
+  .qr-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 15px;
+  }
+}
+
 .download-button {
   background: #28a745;
   color: white;
   border: none;
-  padding: 12px 24px;
+  padding: 10px 18px;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 15px auto;
+  margin: 10px auto;
 }
 
 .download-button:hover {
@@ -373,29 +418,177 @@ body {
 .student-info {
   text-align: left;
   background: #f8f9fa;
-  padding: 15px;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   border-left: 4px solid #667eea;
 }
 
 .student-info h4 {
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   color: #333;
+  font-size: 1.1rem;
 }
 
 .student-info p {
-  margin: 5px 0;
+  margin: 4px 0;
   color: #666;
+  font-size: 0.9rem;
+  line-height: 1.3;
 }
 
-@media (max-width: 600px) {
+/* Form grid layout for larger screens */
+@media (min-width: 768px) {
+  .form-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+  
+  .form-group.full-width {
+    grid-column: span 2;
+  }
+}
+
+/* Desktop - Large screens (1025px and up) */
+@media (min-width: 1025px) {
+  .App {
+    padding: 30px;
+  }
+  
   .registration-container {
-    margin: 10px;
+    padding: 25px;
+    max-width: 950px;
+    width: 100%;
+  }
+  
+  .qr-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  .qr-canvas img {
+    width: 220px !important;
+    height: 220px !important;
+  }
+}
+
+/* Tablet - Medium screens (768px to 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .App {
     padding: 20px;
   }
   
+  .registration-container {
+    padding: 20px;
+    max-width: 90%;
+    width: 100%;
+  }
+  
   .title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .logo {
+    max-width: 70px;
+  }
+  
+  .qr-content-wrapper {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    align-items: start;
+  }
+  
+  .qr-canvas img {
+    width: 200px !important;
+    height: 200px !important;
+  }
+}
+
+/* Mobile - Small screens (767px and below) */
+@media (max-width: 767px) {
+  body {
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .App {
+    padding: 15px;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .registration-container {
+    padding: 15px;
+    max-width: 100%;
+    width: calc(100% - 30px);
+    max-height: calc(100vh - 30px);
+    overflow-y: auto;
+    margin: 0 auto;
+  }
+  
+  .title {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+  
+  .logo {
+    max-width: 60px;
+  }
+  
+  .form-group {
+    margin-bottom: 8px;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 10px 12px;
+    font-size: 0.95rem;
+  }
+  
+  .confirm-button {
+    padding: 10px;
+    font-size: 0.95rem;
+    margin-top: 12px;
+  }
+  
+  .qr-section {
+    margin-top: 15px;
+    padding: 12px;
+  }
+  
+  .qr-title {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+  
+  .qr-content-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .qr-canvas img {
+    width: 180px !important;
+    height: 180px !important;
+  }
+  
+  .student-info {
+    padding: 10px;
+    margin-bottom: 12px;
+  }
+  
+  .student-info h4 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  
+  .student-info p {
+    font-size: 0.85rem;
+    margin: 2px 0;
   }
 }
