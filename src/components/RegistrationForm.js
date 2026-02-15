@@ -58,8 +58,12 @@ const RegistrationForm = () => {
   const validateField = (name, value) => {
     let error = '';
     
-    if (name === 'studentNumber' && value && !/^[a-zA-Z0-9-]+$/.test(value)) {
-      error = 'Student number should contain only letters, numbers, and hyphens';
+    if (name === 'studentNumber' && value) {
+      // Format: YYYY-NNNNN-TG-0 (e.g., 2023-00000-TG-0)
+      const studentIdPattern = /^\d{4}-\d{5}-TG-0$/;
+      if (!studentIdPattern.test(value)) {
+        error = 'Student ID must follow format: YYYY-NNNNN-TG-0 (e.g., 2023-00000-TG-0)';
+      }
     }
     
     if ((name === 'lastName' || name === 'firstName') && value && !/^[a-zA-Z\s]+$/.test(value)) {
